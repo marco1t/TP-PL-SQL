@@ -203,3 +203,60 @@ GROUP BY L.code;
 
 -- 40. Afficher la capacite moyenne des logements
 SELECT AVG(capacite) FROM Logement;
+
+-- 41. Trouver le logement ayant la capacite maximale
+SELECT * FROM Logement WHERE capacite = (SELECT MAX(capacite) FROM Logement);
+
+-- 42. Afficher les voyageurs ayant fait au moins 2 sejours
+SELECT V.*, COUNT(S.idSejour)
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+GROUP BY V.idVoyageur
+HAVING COUNT(S.idSejour) >= 2;
+
+-- 43. Compter combien de sejours ont eu lieu en Corse
+SELECT COUNT(*)
+FROM Sejour S
+JOIN Logement L ON S.codeLogement = L.code
+WHERE L.lieu = 'Corse';
+
+-- Sous-requetes (EXISTS / IN / NOT IN / ANY / ALL)
+
+-- 44. Afficher les voyageurs ayant fait un sejour dans les Alpes (EXISTS)
+SELECT * FROM Voyageur V
+WHERE EXISTS (
+    SELECT 1 FROM Sejour S
+    JOIN Logement L ON S.codeLogement = L.code
+    WHERE S.idVoyageur = V.idVoyageur AND L.lieu = 'Alpes'
+);
+
+-- 45. Afficher les voyageurs n'ayant jamais fait de sejour en Corse (NOT EXISTS)
+SELECT * FROM Voyageur V
+WHERE NOT EXISTS (
+    SELECT 1 FROM Sejour S
+    JOIN Logement L ON S.codeLogement = L.code
+    WHERE S.idVoyageur = V.idVoyageur AND L.lieu = 'Corse'
+);
+
+-- 46. Afficher les logements ou ont sejourne des voyageurs de la meme region que le logement (IN)
+SELECT * FROM Logement L
+WHERE code IN (
+    SELECT S.codeLogement
+    FROM Sejour S
+    JOIN Voyageur V ON S.idVoyageur = V.idVoyageur
+    WHERE V.region = L.lieu
+);
+
+-- 47. Afficher les logements qui n'ont pas d'activites (NOT IN)
+SELECT * FROM Logement
+WHERE code NOT IN (SELECT codeLogement FROM Activite);
+
+-- 48. Afficher les voyageurs dont le nombre de sejours est superieur a la moyenne
+SELECT V.nom, COUNT(S.idSejour)
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+GROUP BY V.idVoyageur
+HAVING COUNT(S.idSejour) > (
+    SELECT AVG(nb_sejours)
+    FROM (SELECT COUNT(idSejour) AS nb_sejours FROM Sejour GROUP BY idVoyageur)
+);

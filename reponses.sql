@@ -84,3 +84,67 @@ FROM Activite A
 JOIN Sejour S ON A.codeLogement = S.codeLogement
 JOIN Voyageur V ON S.idVoyageur = V.idVoyageur
 WHERE V.prenom = 'Phileas' AND V.nom = 'Fogg';
+
+-- 21. Afficher les sejours avec le nom du voyageur et le lieu du logement associe
+SELECT S.idSejour, V.nom, L.lieu
+FROM Sejour S
+JOIN Voyageur V ON S.idVoyageur = V.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code;
+
+-- 22. Afficher le nom des voyageurs ayant effectue au moins un sejour, ainsi que l'identifiant du sejour
+SELECT V.nom, S.idSejour
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur;
+
+-- 23. Afficher le nom des voyageurs et le nom des logements uniquement pour les sejours existants
+SELECT V.nom, L.nom
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code;
+
+-- 24. Afficher tous les voyageurs, ainsi que leurs sejours s'ils existent
+SELECT V.*, S.idSejour
+FROM Voyageur V
+LEFT JOIN Sejour S ON V.idVoyageur = S.idVoyageur;
+
+-- 25. Afficher les voyageurs n'ayant effectue aucun sejour
+SELECT V.*
+FROM Voyageur V
+LEFT JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+WHERE S.idSejour IS NULL;
+
+-- 26. Afficher tous les logements, ainsi que les activites proposees (si elles existent)
+SELECT L.*, A.codeActivite, A.description
+FROM Logement L
+LEFT JOIN Activite A ON L.code = A.codeLogement;
+
+-- 27. Afficher tous les sejours, meme si le logement associe n'existe pas
+SELECT S.*, L.nom
+FROM Sejour S
+LEFT JOIN Logement L ON S.codeLogement = L.code;
+
+-- 28. Afficher tous les voyageurs et tous les sejours, y compris ceux sans correspondance
+SELECT V.*, S.*
+FROM Voyageur V
+LEFT JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+UNION
+SELECT V.*, S.*
+FROM Voyageur V
+RIGHT JOIN Sejour S ON V.idVoyageur = S.idVoyageur;
+
+-- 29. Afficher les logements qui ne proposent aucune activite
+SELECT L.*
+FROM Logement L
+LEFT JOIN Activite A ON L.code = A.codeLogement
+WHERE A.codeActivite IS NULL;
+
+-- 30. Afficher les voyageurs qui n'ont jamais sejourne dans aucun logement
+SELECT V.*
+FROM Voyageur V
+LEFT JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+WHERE S.idSejour IS NULL;
+
+-- 31. Afficher le nom du logement et le code activite (NULL si pas d'activite)
+SELECT L.nom AS logement, A.codeActivite
+FROM Logement L
+LEFT JOIN Activite A ON L.code = A.codeLogement;

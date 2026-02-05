@@ -34,3 +34,17 @@ SELECT * FROM Logement ORDER BY capacite DESC;
 
 -- 11. Afficher les 2 logements ayant la plus grande capacite
 SELECT * FROM Logement ORDER BY capacite DESC LIMIT 2;
+
+-- Conjonction, disjonction et negation (AND / OR / NOT)
+
+-- 12. Afficher les voyageurs habitant Corse ou Bretagne
+SELECT * FROM Voyageur WHERE region = 'Corse' OR region = 'Bretagne';
+
+-- 13. Afficher les logements situes en Corse et de type Gite
+SELECT * FROM Logement WHERE lieu = 'Corse' AND type = 'Gîte';
+
+-- 14. Afficher les logements non situes en Alpes
+SELECT * FROM Logement WHERE NOT lieu = 'Alpes';
+
+-- 15. Afficher les sejours ayant un debut > 15 et une fin < 23
+SELECT * FROM Sejour WHERE debut > 15 AND fin < 23;

@@ -48,3 +48,39 @@ SELECT * FROM Logement WHERE NOT lieu = 'Alpes';
 
 -- 15. Afficher les sejours ayant un debut > 15 et une fin < 23
 SELECT * FROM Sejour WHERE debut > 15 AND fin < 23;
+
+-- Jointures entre tables
+
+-- 16. Afficher le nom des voyageurs et le nom du logement de chacun de leurs sejours
+SELECT V.nom, L.nom 
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code;
+
+-- 17. Afficher les voyageurs ayant sejourne en Corse
+SELECT DISTINCT V.* 
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code
+WHERE L.lieu = 'Corse';
+
+-- 18. Afficher les voyageurs ayant sejourne dans les Alpes
+SELECT DISTINCT V.* 
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code
+WHERE L.lieu = 'Alpes';
+
+-- 19. Afficher le type et le lieu des logements visites par Nicolas Bouvier
+SELECT L.type, L.lieu 
+FROM Logement L
+JOIN Sejour S ON L.code = S.codeLogement
+JOIN Voyageur V ON S.idVoyageur = V.idVoyageur
+WHERE V.prenom = 'Nicolas' AND V.nom = 'Bouvier';
+
+-- 20. Afficher les activites proposees dans les logements ou Phileas Fogg a sejourne
+SELECT A.* 
+FROM Activite A
+JOIN Sejour S ON A.codeLogement = S.codeLogement
+JOIN Voyageur V ON S.idVoyageur = V.idVoyageur
+WHERE V.prenom = 'Phileas' AND V.nom = 'Fogg';

@@ -260,3 +260,50 @@ HAVING COUNT(S.idSejour) > (
     SELECT AVG(nb_sejours)
     FROM (SELECT COUNT(idSejour) AS nb_sejours FROM Sejour GROUP BY idVoyageur)
 );
+
+-- Operations ensemblistes (UNION / INTERSECT / EXCEPT)
+
+-- 49. Afficher la liste des regions des voyageurs ou des lieux de logement (UNION)
+SELECT region FROM Voyageur
+UNION
+SELECT lieu FROM Logement;
+
+-- 50. Afficher les regions communes aux voyageurs et aux lieux de logement (INTERSECT)
+SELECT region FROM Voyageur
+INTERSECT
+SELECT lieu FROM Logement;
+
+-- 51. Afficher les regions presentes chez les voyageurs mais absentes dans les lieux de logement (EXCEPT)
+SELECT region FROM Voyageur
+EXCEPT
+SELECT lieu FROM Logement;
+
+-- Pour aller plus loin
+
+-- 52. Afficher les voyageurs et le nombre total de jours passes en sejour
+SELECT V.nom, SUM(S.fin - S.debut) AS total_jours
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+GROUP BY V.idVoyageur;
+
+-- 53. Afficher la liste des voyageurs avec les activites qu'ils ont pu pratiquer
+SELECT DISTINCT V.nom, A.description
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code
+JOIN Activite A ON L.code = A.codeLogement;
+
+-- 54. Trouver les logements ayant toutes les activites disponibles dans la base
+SELECT L.*
+FROM Logement L
+JOIN Activite A ON L.code = A.codeLogement
+GROUP BY L.code
+HAVING COUNT(DISTINCT A.codeActivite) = (SELECT COUNT(DISTINCT codeActivite) FROM Activite);
+
+-- 55. Afficher les voyageurs qui ont sejourne dans toutes les regions existantes
+SELECT V.nom
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code
+GROUP BY V.idVoyageur
+HAVING COUNT(DISTINCT L.lieu) = (SELECT COUNT(DISTINCT lieu) FROM Logement);

@@ -23,3 +23,14 @@ SELECT * FROM Sejour WHERE debut < 20;
 
 -- 8. Afficher les activites dont la description contient le mot deriveur
 SELECT * FROM Activite WHERE description LIKE '%dériveur%';
+
+-- Tri et limitation (ORDER BY / LIMIT)
+
+-- 9. Afficher les voyageurs tries par nom alphabetique
+SELECT * FROM Voyageur ORDER BY nom;
+
+-- 10. Afficher les logements tries par capacite decroissante
+SELECT * FROM Logement ORDER BY capacite DESC;
+
+-- 11. Afficher les 2 logements ayant la plus grande capacite
+SELECT * FROM Logement ORDER BY capacite DESC LIMIT 2;

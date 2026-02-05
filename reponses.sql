@@ -148,3 +148,58 @@ WHERE S.idSejour IS NULL;
 SELECT L.nom AS logement, A.codeActivite
 FROM Logement L
 LEFT JOIN Activite A ON L.code = A.codeLogement;
+
+-- Conditions sur plusieurs tables (avec jointures + filtres)
+
+-- 32. Afficher les voyageurs ayant fait un sejour dans un logement dont la capacite est superieure a 30
+SELECT DISTINCT V.*
+FROM Voyageur V
+JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+JOIN Logement L ON S.codeLogement = L.code
+WHERE L.capacite > 30;
+
+-- 33. Afficher les logements qui n'ont aucune activite
+SELECT L.*
+FROM Logement L
+LEFT JOIN Activite A ON L.code = A.codeLogement
+WHERE A.codeActivite IS NULL;
+
+-- 34. Afficher les voyageurs n'ayant jamais sejourne dans un hotel
+SELECT V.*
+FROM Voyageur V
+WHERE V.idVoyageur NOT IN (
+    SELECT S.idVoyageur
+    FROM Sejour S
+    JOIN Logement L ON S.codeLogement = L.code
+    WHERE L.type = 'Hôtel'
+);
+
+-- 35. Afficher les logements ou plusieurs voyageurs differents ont sejourne
+SELECT L.*
+FROM Logement L
+JOIN Sejour S ON L.code = S.codeLogement
+GROUP BY L.code
+HAVING COUNT(DISTINCT S.idVoyageur) > 1;
+
+-- Agregats (COUNT, AVG, MAX, MIN, SUM, GROUP BY, HAVING)
+
+-- 36. Compter le nombre total de voyageurs
+SELECT COUNT(*) FROM Voyageur;
+
+-- 37. Compter le nombre de logements par type
+SELECT type, COUNT(*) FROM Logement GROUP BY type;
+
+-- 38. Compter le nombre de sejours effectues par chaque voyageur
+SELECT V.nom, COUNT(S.idSejour)
+FROM Voyageur V
+LEFT JOIN Sejour S ON V.idVoyageur = S.idVoyageur
+GROUP BY V.idVoyageur;
+
+-- 39. Afficher le nombre d'activites proposees par chaque logement
+SELECT L.nom, COUNT(A.codeActivite)
+FROM Logement L
+LEFT JOIN Activite A ON L.code = A.codeLogement
+GROUP BY L.code;
+
+-- 40. Afficher la capacite moyenne des logements
+SELECT AVG(capacite) FROM Logement;
